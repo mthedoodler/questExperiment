@@ -7,6 +7,7 @@
 
     <style>
         body {
+            height: 100%;
             background-color: #0073ff;
         }
         p,h1,h2,h3,h4,h5,h6 {
@@ -16,12 +17,26 @@
 
         #title {
             display: block;
+            height: 100px;
             margin: auto;
             text-align: center;
         }
 
-        #gameCanvas {
+        #questArea {
+            overflow: hidden;
+            display: block;
             margin: auto;
+            width: 100%;
+            height: 500px;
+            background-color: #43e6ff ;
+        }
+
+        .quest {
+            width: 40px;
+            height: 40px;
+            position: fixed;
+            background-color: rgb(255, 246, 198);
+            border: 4px ridge rgb(0, 0, 0);
         }
 
     </style>
@@ -30,15 +45,18 @@
     <div id="title">
         <h1>Quest System Test</h1>
     </div>
-    <div>
-        <canvas id="gameCanvas" width="300" height="300"></canvas>
+    <div id="questArea">
     </div>
 
     <script>
 
-        class Quest {
+        const questArea = document.getElementById("questArea");
+
+        class Quest{
 
             static allQuests = [];
+
+            #node;
 
             constructor(name, x, y, description = "", unlocked = false) {
                 this.name = name;
@@ -49,6 +67,16 @@
                 this.children = new Set([]);
 
                 Quest.allQuests.push(this);
+                
+                this.#node = document.createElement("div");
+                this.#node.className = "quest";
+
+                this.#node.style.transform = `translate(${x}px, ${y}px)`;
+
+                questArea.appendChild(this.#node);
+
+                this.updateDisplay();
+
             }
 
             addDependent(anotherQuest) {
@@ -58,6 +86,14 @@
 
                 this.children.add(anotherQuest);
                 anotherQuest.parents.add(this);
+            }
+
+            dependentsList() {
+                return [...this.children].map((e) => e.name).join(", ");
+            }
+
+            prerequisiteList() {
+                return [...this.parents].map((e) => e.name).join(", ");
             }
 
             addPrerequisite(anotherQuest) {
@@ -73,27 +109,41 @@
                 this.position = (x, y);
             }
 
-            checkPrerequisitesCompleted() {
+            checkPrerequisitesCompletedAndUnlock() {
+                for (const p of this.parents) {
+                    if (!(p.completed)) {
+                        return;
+                    }
+                }
+                
+                this.unlocked = true;
             }
+            
+            complete() {
+                this.complete = true;
+                for (const c of this.children) {
+                    c.checkPrerequisitesCompletedAndUnlock();
+                }
+            }
+
+            updateDisplay() {
+                
+                if (this.unlocked && this.completed) {
+                    this.#node.style.borderColor = "green";
+                    return;
+                }
+                
+                if (this.unlocked && !this.completed) {
+                    this.#node.style.borderColor = "aqua";
+                    return;
+                }
+
+                if (!this.unlocked) {
+                    this.#node.style.borderColor = "red";
+                }
+            }
+            
         }
-
-        let firstQuest = new Quest("Hello World", 0, 0);
-
-        let secondQuest = new Quest("First Child", 50, 25);
-
-        let thirdQuest = new Quest("Second Child", 50, -25);
-
-        firstQuest.addDependent(secondQuest);
-        firstQuest.addDependent(thirdQuest);
-
-        console.log(secondQuest.parents);
-
-        const canvas = document.getElementById("gameCanvas");
-
-        const ctx = canvas.getContext("2d");
-
-        ctx.fillStyle = "white";
-        ctx.fillRect(0,0,300,300);
 
 
     </script>
