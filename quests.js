@@ -1,11 +1,16 @@
 const questArea = document.getElementById("questArea");
 const questAreaContainer = document.getElementById("questAreaContainer");
 
+const modal = document.getElementById("modal");
+
+let shouldDrag = true;
+
 class Quest{
 
     static allQuests = [];
 
     #node;
+    #connectionNodes;
 
     constructor(name, x, y, description = "", unlocked = false) {
         this.name = name;
@@ -20,13 +25,27 @@ class Quest{
         this.#node = document.createElement("div");
         this.#node.className = "quest";
 
-        this.#node.style.left = `calc(50vw + ${x}px)`;
-        this.#node.style.top = `calc(50vh + ${y}px)`;
+        this.#node.innerHTML = `<p>${name[0]}</p>`
+
+        this.#connectionNodes = [];
 
         questArea.appendChild(this.#node);
 
-        this.updateDisplay();
+        this.#node.addEventListener("mousedown", (e) => this.showQuestInfo());//this.complete());
 
+        this.updateDisplay();
+    }
+
+    setImportant() {
+        this.#node.className = "quest questBig";
+    }
+
+    setNormal() {
+        this.#node.className = "quest"
+    }
+
+    setRequired() {
+        this.#node.className = "quest questSquare"
     }
 
     addDependent(anotherQuest) {
@@ -36,6 +55,7 @@ class Quest{
 
         this.children.add(anotherQuest);
         anotherQuest.parents.add(this);
+        this.updateDisplay();
     }
 
     dependentsList() {
@@ -53,6 +73,7 @@ class Quest{
 
         this.parents.add(anotherQuest);
         anotherQuest.children.add(this);
+        anotherQuest.updateDisplay();
     }
 
     setPosition(x, y) {
@@ -67,41 +88,93 @@ class Quest{
         }
         
         this.unlocked = true;
+        this.updateDisplay();
     }
     
     complete() {
-        this.complete = true;
+        if (this.completed || !this.unlocked) {return;}
+
+        this.completed = true;
         for (const c of this.children) {
             c.checkPrerequisitesCompletedAndUnlock();
         }
+
+        this.updateDisplay();
+    }
+
+    showQuestInfo() {
+        stopDragging();
+        shouldDrag = false;
+        modal.showModal();
+    }
+
+    #createConnectionLine(otherQuest) {
+        let diffX = otherQuest.position[0] - this.position[0];
+        let diffY = otherQuest.position[1] - this.position[1];
+        
+        let line = document.createElement("div");
+        line.className = "connectionLine";
+
+        questArea.appendChild(line);
+        this.#connectionNodes.push(line);
+
+        let distance = Math.round(Math.sqrt(diffX*diffX, diffY*diffY));
+        let angle = Math.atan2(diffY, diffX);
+        
+        line.style.width = `${distance}px`;
+        line.style.left = `calc(50vw + ${this.position[0]}px)`;
+        line.style.top = `calc(50vh + ${this.position[1]}px)`;
+
+        line.style.transform = `rotate(${angle}rad)`;
+
+        if (this.unlocked) {
+            line.style.backgroundColor = (this.completed) ? "lime": "blue";
+        } else {
+            line.style.backgroundColor = "maroon";
+        }
+
     }
 
     updateDisplay() {
         
-        if (this.unlocked && this.completed) {
-            this.#node.style.borderColor = "green";
-            return;
-        }
-        
-        if (this.unlocked && !this.completed) {
-            this.#node.style.borderColor = "aqua";
-            return;
+        //Update border color
+        this.#node.style.left = `calc(50vw + ${this.position[0]}px)`;
+        this.#node.style.top = `calc(50vh + ${this.position[1]}px)`;
+
+        if (this.unlocked) {
+            if (this.completed) {
+                this.#node.style.borderColor = "lime";
+            } else {
+                this.#node.style.borderColor = "aqua"
+            }
+        } else {
+             this.#node.style.borderColor = "red";
         }
 
-        if (!this.unlocked) {
-            this.#node.style.borderColor = "red";
+        //Update connection lines
+        for (const line of this.#connectionNodes) {
+            line.remove()
         }
+        
+        this.#connectionNodes.length = 0;
+
+        for (const quest of this.children.values()) {
+            this.#createConnectionLine(quest);
+        }
+
     }
     
 }
 
-
 let elementX, elementY;
 let currentX, currentY;
 
-
 function startDragging(e) {
     e.preventDefault();
+
+    if (!shouldDrag) {
+        return;
+    }
     currentX = e.clientX;
     currentY = e.clientY;
 
@@ -117,7 +190,6 @@ function dragElement(e) {
     let offsetX = e.clientX - currentX;
     let offsetY = e.clientY - currentY;
 
-    console.log(`${elementX + offsetX}px`)
     questArea.style.left = `${elementX + offsetX}px`;
     questArea.style.top = `${elementY + offsetY}px`;
 }
@@ -128,3 +200,5 @@ function stopDragging(e) {
 
 questAreaContainer.addEventListener('mousedown', startDragging);
 questAreaContainer.addEventListener('mouseup', stopDragging);
+
+

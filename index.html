@@ -8,13 +8,15 @@
     <style>
         body {
             background-color: #00387d;
-        }
-        p,h1,h2,h3,h4,h5,h6 {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        h1,h2,h3,h4,h5,h6 {
             color: white;
         }
 
         #title {
+            color:white;
             background-color: black;
             display: block;
             position: absolute;
@@ -34,6 +36,7 @@
         }
 
         #questArea {
+            color: black;
             top: 0px;
             left: 0px;
             display: block;
@@ -41,11 +44,127 @@
         }
 
         .quest {
+            display: block;
+            position: absolute;
+
             width: 40px;
             height: 40px;
-            position: absolute;
+
+            line-height: 40px;
+            text-align: center;
+            border-radius: 25px;
+
+            font-weight: bold;
+            font-size: large;
+
             background-color: rgb(255, 246, 198);
+            color: black;
             border: 4px ridge rgb(0, 0, 0);
+            z-index: 2;
+            transform: translate(-50%, -50%);
+        }
+
+        .quest p {
+            margin: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .questBig {
+            border-radius: 0px;
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            font-size: 40px;
+            transform-origin: center center;
+            transform: translate(-50%, -50%) rotate(45deg);
+        }
+
+        .questBig p {
+            margin: 0;
+            position: absolute;
+            transform: translate(-50%, -50%) rotate(-45deg);
+        }
+
+        .questSquare {
+            border-radius: 0px;
+        }
+
+        .connectionLine {
+            top: 0px;
+            left: 0px;
+            transform-origin: center left;
+            position: absolute;
+            background-color: black;
+            width: 5px;
+            height: 5px;
+            z-index: 1;
+        }
+
+        #questInfoBox {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            
+            transform: translate(-50%, -50%);
+            z-index: 5;
+
+            display: block;
+            width: 600px;
+            height: 400px;
+            background-color: rgba(0, 89, 255, 80%);
+            border-radius: 10px;
+        }
+
+        #questInfoHeader {
+            position: relative;
+            height: 50px;
+            margin: auto;
+            text-align: center;
+            
+            padding: 0px;
+            color: white;
+            font-size: 30px;
+            font-weight: bold;
+
+            border-bottom: solid 2px #b1b1e2;
+        }
+
+        #questInfoHeader p{
+            display: inline;
+            margin: 10px;
+            line-height: 50px;
+        }
+
+        #questInfoCloseButton {
+            position: absolute;
+
+            font-size: inherit;
+            color: white;
+            background-color: #000acc;
+            border-radius: 10px;
+            border-style: none;
+            right: 0px;
+            height: 50px;
+            width: 50px;
+            margin: 0px;
+        }
+
+        #questInfoRequirements {
+            border-bottom: solid 2px #b1b1e2;
+            height: 50px;
+        }
+
+        #questInfoCloseButton:hover {
+            background-color: #2694f5;
+        }
+
+        #questInfoDescription {
+            height: 300px;
+            overflow-y: scroll;
+
         }
 
     </style>
@@ -54,6 +173,19 @@
     <div id="title">
         <h1>Quest System Test</h1>
     </div>
+
+
+    <div id="questInfoBox">
+        <div id="questInfoHeader">
+            <p>Title</p>
+            <button id="questInfoCloseButton">X</button>
+        </div>
+        <div id="questInfoRequirements"></div>
+        <div id="questInfoDescription">
+            <p></p>
+        </div>
+    </div>
+
     <div id="questAreaContainer">
     <div id="questArea">
     </div>
