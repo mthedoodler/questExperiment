@@ -7,8 +7,7 @@
 
     <style>
         body {
-            height: 100%;
-            background-color: #0073ff;
+            background-color: #00387d;
         }
         p,h1,h2,h3,h4,h5,h6 {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -16,25 +15,35 @@
         }
 
         #title {
+            background-color: black;
             display: block;
-            width: 100%;
-            height: 60px;
+            position: absolute;
             margin: auto;
+            width: 100%;
             text-align: center;
+            z-index: 100;
         }
 
-        #questArea {
+        #questAreaContainer {
+            position: relative;
+            background-color: #5673ac;
             overflow: hidden;
             margin: auto;
             width: 100%;
-            height: 500px;
-            background-color: #43e6ff;
+            height: 100vh;
+        }
+
+        #questArea {
+            top: 0px;
+            left: 0px;
+            display: block;
+            position: relative;
         }
 
         .quest {
             width: 40px;
             height: 40px;
-            position: fixed;
+            position: absolute;
             background-color: rgb(255, 246, 198);
             border: 4px ridge rgb(0, 0, 0);
         }
@@ -45,108 +54,12 @@
     <div id="title">
         <h1>Quest System Test</h1>
     </div>
+    <div id="questAreaContainer">
     <div id="questArea">
     </div>
+    </div>
 
-    <script>
-
-        const questArea = document.getElementById("questArea");
-
-        class Quest{
-
-            static allQuests = [];
-
-            #node;
-
-            constructor(name, x, y, description = "", unlocked = false) {
-                this.name = name;
-                this.unlocked = unlocked;
-                this.position = [x, y];
-                this.description = description;
-                this.parents = new Set([]);
-                this.children = new Set([]);
-
-                Quest.allQuests.push(this);
-                
-                this.#node = document.createElement("div");
-                this.#node.className = "quest";
-
-                this.#node.style.transform = `translate(${x}px, ${y}px)`;
-
-                questArea.appendChild(this.#node);
-
-                this.updateDisplay();
-
-            }
-
-            addDependent(anotherQuest) {
-                if (!(anotherQuest instanceof Quest)) {
-                    throw new Error("quest must be a Quest.");
-                }
-
-                this.children.add(anotherQuest);
-                anotherQuest.parents.add(this);
-            }
-
-            dependentsList() {
-                return [...this.children].map((e) => e.name).join(", ");
-            }
-
-            prerequisiteList() {
-                return [...this.parents].map((e) => e.name).join(", ");
-            }
-
-            addPrerequisite(anotherQuest) {
-                if (!(anotherQuest instanceof Quest)) {
-                    throw new Error("quest must be a Quest.");
-                }
-
-                this.parents.add(anotherQuest);
-                anotherQuest.children.add(this);
-            }
-
-            setPosition(x, y) {
-                this.position = (x, y);
-            }
-
-            checkPrerequisitesCompletedAndUnlock() {
-                for (const p of this.parents) {
-                    if (!(p.completed)) {
-                        return;
-                    }
-                }
-                
-                this.unlocked = true;
-            }
-            
-            complete() {
-                this.complete = true;
-                for (const c of this.children) {
-                    c.checkPrerequisitesCompletedAndUnlock();
-                }
-            }
-
-            updateDisplay() {
-                
-                if (this.unlocked && this.completed) {
-                    this.#node.style.borderColor = "green";
-                    return;
-                }
-                
-                if (this.unlocked && !this.completed) {
-                    this.#node.style.borderColor = "aqua";
-                    return;
-                }
-
-                if (!this.unlocked) {
-                    this.#node.style.borderColor = "red";
-                }
-            }
-            
-        }
-
-
-    </script>
+    <script src="quests.js"></script>
     <script src="tests.js"></script>
 </body>
 </html>

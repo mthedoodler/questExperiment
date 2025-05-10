@@ -1,8 +1,8 @@
- let firstQuest = new Quest("Hello World", 0, 0, "", true);
+ let firstQuest = new Quest("Hello World", 0, 100, "", true);
 
-let secondQuest = new Quest("First Child", 150, 50);
+let secondQuest = new Quest("First Child", 150, 150);
 
-let thirdQuest = new Quest("Second Child", 150, -50);
+let thirdQuest = new Quest("Second Child", 150, 50);
 
 firstQuest.addDependent(secondQuest);
 firstQuest.addDependent(thirdQuest);
