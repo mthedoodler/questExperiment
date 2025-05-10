@@ -1,7 +1,12 @@
 const questArea = document.getElementById("questArea");
 const questAreaContainer = document.getElementById("questAreaContainer");
 
-const modal = document.getElementById("modal");
+const questInfoBox = document.getElementById("questInfoBox");
+
+const questInfoTitle = document.getElementById("questTitle");
+const questInfoDescription = document.getElementById("questDescription");
+
+const closeQuestInfoButton = document.getElementById("questInfoCloseButton");
 
 let shouldDrag = true;
 
@@ -31,7 +36,7 @@ class Quest{
 
         questArea.appendChild(this.#node);
 
-        this.#node.addEventListener("mousedown", (e) => this.showQuestInfo());//this.complete());
+        this.#node.addEventListener("click", (e) => showQuestInfo(this));//this.complete());
 
         this.updateDisplay();
     }
@@ -100,12 +105,6 @@ class Quest{
         }
 
         this.updateDisplay();
-    }
-
-    showQuestInfo() {
-        stopDragging();
-        shouldDrag = false;
-        modal.showModal();
     }
 
     #createConnectionLine(otherQuest) {
@@ -196,6 +195,16 @@ function dragElement(e) {
 
 function stopDragging(e) {
     questAreaContainer.removeEventListener('mousemove', dragElement);
+}
+
+function showQuestInfo(quest) {
+    stopDragging();
+    shouldDrag = false;
+
+    questInfoTitle.textContent = quest.name || "Untitled Quest";
+    questInfoDescription.textContent = quest.description || "No quest description.";
+
+    questInfoBox.style.display = "block";
 }
 
 questAreaContainer.addEventListener('mousedown', startDragging);

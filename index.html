@@ -104,6 +104,7 @@
         }
 
         #questInfoBox {
+            color: white;
             position: absolute;
             top: 50%;
             left: 50%;
@@ -111,7 +112,7 @@
             transform: translate(-50%, -50%);
             z-index: 5;
 
-            display: block;
+            display: none;
             width: 600px;
             height: 400px;
             background-color: rgba(0, 89, 255, 80%);
@@ -125,7 +126,6 @@
             text-align: center;
             
             padding: 0px;
-            color: white;
             font-size: 30px;
             font-weight: bold;
 
@@ -162,8 +162,11 @@
         }
 
         #questInfoDescription {
-            height: 300px;
-            overflow-y: scroll;
+            height: 290px;
+            overflow-y: auto;
+            font-size: 20px;
+            margin-left: 20px;
+            margin-right: 20px;
 
         }
 
@@ -177,12 +180,12 @@
 
     <div id="questInfoBox">
         <div id="questInfoHeader">
-            <p>Title</p>
+            <p id="questTitle">Title</p>
             <button id="questInfoCloseButton">X</button>
         </div>
         <div id="questInfoRequirements"></div>
         <div id="questInfoDescription">
-            <p></p>
+            <p id="questDescription">A</p>
         </div>
     </div>
 
