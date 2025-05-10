@@ -210,7 +210,7 @@ function showQuestInfo(quest) {
     completeQuestButton.disabled = (!quest.unlocked || quest.completed);
     completeQuestButton.style.backgroundColor = quest.completed ? "lime" : "";
     
-    completeQuestButton.addEventListener("click", () => buttonCompleteQuest(quest));
+    completeQuestButton.addEventListener("click", () => buttonCompleteQuest(quest), { once: true });
     questInfoBox.style.display = "block";
 }
 
@@ -227,7 +227,6 @@ function hideQuestInfo() {
     questInfoTitle.textContent = ""
     questInfoDescription.textContent = "";
     completeQuestButton.style.backgroundColor = "";
-    completeQuestButton.removeEventListener("click");
 }
 
 closeQuestInfoButton.addEventListener("click", hideQuestInfo);
