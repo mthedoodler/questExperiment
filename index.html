@@ -132,13 +132,18 @@
             border-bottom: solid 2px #b1b1e2;
         }
 
+        #questInfoRequirements {
+            margin: auto;
+            position: relative;
+        }
+
         #questInfoHeader p{
             display: inline;
             margin: 10px;
             line-height: 50px;
         }
 
-        #questInfoCloseButton {
+        #questInfoBox button {
             position: absolute;
 
             font-size: inherit;
@@ -146,19 +151,39 @@
             background-color: #000acc;
             border-radius: 10px;
             border-style: none;
+            margin: 0px;
+        }
+
+        #questInfoBox button:hover {
+            background-color: #2694f5;
+        }
+
+        #questInfoBox button:disabled {
+            background-color: #3975aa;
+        }
+
+        #questInfoBox button:disabled:hover {
+            background-color: #3975aa;
+        }
+
+        #questInfoCloseButton {
             right: 0px;
             height: 50px;
             width: 50px;
-            margin: 0px;
+        }
+
+        #questInfoCompleteButton {
+            height: 40px;
+            width: 40px;
+
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
         }
 
         #questInfoRequirements {
             border-bottom: solid 2px #b1b1e2;
             height: 50px;
-        }
-
-        #questInfoCloseButton:hover {
-            background-color: #2694f5;
         }
 
         #questInfoDescription {
@@ -183,7 +208,9 @@
             <p id="questTitle">Title</p>
             <button id="questInfoCloseButton">X</button>
         </div>
-        <div id="questInfoRequirements"></div>
+        <div id="questInfoRequirements">
+            <button id="questInfoCompleteButton">✔</button>
+        </div>
         <div id="questInfoDescription">
             <p id="questDescription">A</p>
         </div>

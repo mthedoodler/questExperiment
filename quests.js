@@ -6,6 +6,9 @@ const questInfoBox = document.getElementById("questInfoBox");
 const questInfoTitle = document.getElementById("questTitle");
 const questInfoDescription = document.getElementById("questDescription");
 
+
+const completeQuestButton = document.getElementById("questInfoCompleteButton");
+
 const closeQuestInfoButton = document.getElementById("questInfoCloseButton");
 
 let shouldDrag = true;
@@ -204,8 +207,30 @@ function showQuestInfo(quest) {
     questInfoTitle.textContent = quest.name || "Untitled Quest";
     questInfoDescription.textContent = quest.description || "No quest description.";
 
+    completeQuestButton.disabled = (!quest.unlocked || quest.completed);
+    completeQuestButton.style.backgroundColor = quest.completed ? "lime" : "";
+    
+    completeQuestButton.addEventListener("click", () => buttonCompleteQuest(quest));
     questInfoBox.style.display = "block";
 }
+
+function buttonCompleteQuest(quest) {
+    quest.complete();
+    completeQuestButton.style.backgroundColor = "lime";
+}
+
+function hideQuestInfo() {
+    shouldDrag = true;
+
+    questInfoBox.style.display = "none";
+
+    questInfoTitle.textContent = ""
+    questInfoDescription.textContent = "";
+    completeQuestButton.style.backgroundColor = "";
+    completeQuestButton.removeEventListener("click");
+}
+
+closeQuestInfoButton.addEventListener("click", hideQuestInfo);
 
 questAreaContainer.addEventListener('mousedown', startDragging);
 questAreaContainer.addEventListener('mouseup', stopDragging);
