@@ -1,5 +1,3 @@
-let questArea = document.getElementById("quest-area");
-
 function drawRectangle(svg, x, y, width, height, isCentered=false) {
     // No styling here - this is handled by CSS later.
     const rect = document.createElementNS(svg.namespaceURI, 'rect')

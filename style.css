@@ -81,6 +81,8 @@ main {
     color: black;
     width: 90%;
     border-color: black;
+    border-style:solid;
+    background-color: black;
 }
 
 #quest-chapters ul {
@@ -91,3 +93,55 @@ main {
     width: 100%;
     height: 100%;
 }
+
+.quest {
+    stroke: black;
+    fill: none;
+}
+
+.quest:hover {
+    fill: pink;
+}
+
+.svg-test-line {
+    stroke: black;
+    stroke-width: 1px;
+}
+
+.test-pattern-color {
+    fill: blue;
+}
+
+.quest-connection-line {
+    stroke-width: 8px;
+    stroke: black;
+}
+
+.quest-connection-line line:last-child {
+    stroke: gray;
+}
+
+.quest-line-complete line:first-child {
+    stroke: green;
+}
+
+.quest-line-complete line:last-child {
+    stroke: lime;
+}
+
+.quest-line-locked line:first-child {
+    stroke: rgb(151, 0, 0);
+}
+
+.quest-line-locked line:last-child {
+    stroke: rgb(106, 0, 0);
+}
+
+.quest-line-unlocked line:first-child {
+    stroke: rgb(0, 127, 200);
+}
+
+.quest-line-unlocked line:last-child {
+    stroke: rgb(83, 178, 255);
+}
+
