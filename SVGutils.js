@@ -1,4 +1,4 @@
-function drawRectangle(svg, x, y, width, height, isCentered=false) {
+export function drawRectangle(svg, x, y, width, height, isCentered=false) {
     // No styling here - this is handled by CSS later.
     const rect = document.createElementNS(svg.namespaceURI, 'rect')
 
@@ -15,7 +15,7 @@ function drawRectangle(svg, x, y, width, height, isCentered=false) {
     return rect;
 }
 
-function drawCircle(svg, x, y, radius) {
+export function drawCircle(svg, x, y, radius) {
     // No styling here - this is handled by CSS later.
     const circle = document.createElementNS(svg.namespaceURI, 'circle')
 
@@ -28,7 +28,7 @@ function drawCircle(svg, x, y, radius) {
     return circle;
 }
 
-function drawPolygon(svg, numOfPoints, x, y, angle, radius) {
+export function drawPolygon(svg, numOfPoints, x, y, angle, radius) {
     const polygon = document.createElementNS(svg.namespaceURI, 'polygon');
 
     let points = "";
@@ -49,7 +49,7 @@ function drawPolygon(svg, numOfPoints, x, y, angle, radius) {
     return polygon;
 }
 
-function drawLine(svg, x1, y1, x2, y2) {
+export function drawLine(svg, x1, y1, x2, y2) {
 
     const line = document.createElementNS(svg.namespaceURI, 'line')
 
@@ -63,7 +63,7 @@ function drawLine(svg, x1, y1, x2, y2) {
     return line;
 };
 
-function drawConnectionRect(svg, x1, y1, x2, y2, pattern) {
+export function drawConnectionRect(svg, x1, y1, x2, y2, pattern) {
 
     const height = 5;
 
@@ -91,7 +91,7 @@ function drawConnectionRect(svg, x1, y1, x2, y2, pattern) {
     return line;
 };
 
-function drawConnectionLine(svg, x1, y1, x2, y2) {
+export function drawConnectionLine(svg, x1, y1, x2, y2) {
 
     const g = document.createElementNS(svg.namespaceURI, 'g');
 
@@ -119,6 +119,7 @@ function drawConnectionLine(svg, x1, y1, x2, y2) {
     return g;
 };
 
+
 //let rect = drawRectangle(questArea, 20, 10, 40, 20);
 //let poly = drawPolygon(questArea, 8, 100, 100, 22.5, 50);
 //let circle = drawCircle(questArea, 150, 150, 20);
@@ -135,5 +136,3 @@ function drawConnectionLine(svg, x1, y1, x2, y2) {
 
 //let questLine2 = drawConnectionLine(questArea, 0, 500, 500, 0);
 //questLine2.classList.add("quest-line-locked");
-
-

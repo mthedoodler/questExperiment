@@ -52,11 +52,17 @@ Task should have:
     - An optional icon.
 
 A Questbook should have:
-    - The area with which to draw things in.
-    - A name
+    * The area with which to draw things in.
+    * A name
+    * A description ofwhat the quests are for overall, like an introduction.
 
-    - A list of chapters.
-    - A list of all quests associated with the questbook.
+    * A list of chapters.
+    * The ability to set the SVG canvas.
+
+A questbook should:
+    * Be able to add new chapters to it.
+    * Be able to display its information on to the DOM.
+    - Register event handlers on chapter table of contents and quest area.
 
 Chapter should have:
     - a name

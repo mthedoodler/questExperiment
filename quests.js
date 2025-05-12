@@ -1,141 +1,210 @@
-let questArea = document.getElementById("quest-area");
 
-function drawRectangle(svg, x, y, width, height, isCentered=false) {
-    // No styling here - this is handled by CSS later.
-    const rect = document.createElementNS(svg.namespaceURI, 'rect')
 
-    x = (isCentered ? x - (width/2) : x);
-    y = (isCentered ? y - (height/2) : y);
-
-    rect.setAttribute('x', x);
-    rect.setAttribute('y', y);
-    rect.setAttribute('width', width);
-    rect.setAttribute('height', height);
-    
-    svg.appendChild(rect);
-
-    return rect;
+function assertElement(node, expectedType) {
+    if (!(node instanceof expectedType)) {
+        throw new TypeError(`Expected ${expectedType.name}, got ${node}.`);
+    }
 }
 
-function drawCircle(svg, x, y, radius) {
-    // No styling here - this is handled by CSS later.
-    const circle = document.createElementNS(svg.namespaceURI, 'circle')
-
-    circle.setAttribute('cx', x);
-    circle.setAttribute('cy', y);
-    circle.setAttribute('r', radius);
-    
-    svg.appendChild(circle);
-
-    return circle;
+function assertSVG(node) {
+    if (!(
+        node &&
+        node instanceof SVGSVGElement &&
+        node.tagName.toLowerCase() === 'svg' &&
+        node.namespaceURI === 'http://www.w3.org/2000/svg')) {
+            throw new TypeError(`Expected SVG Element, got ${node}.`)
+        }
 }
 
-function drawPolygon(svg, numOfPoints, x, y, angle, radius) {
-    const polygon = document.createElementNS(svg.namespaceURI, 'polygon');
+function assertClass(obj, cls) {
+    if (!(obj instanceof cls)) {
+        throw new TypeError(`Expected ${cls.name}, got ${obj.constructor.name}`);
+    }
+}
 
-    let points = "";
+class Chapter {
     
-    for (let i=0; i < numOfPoints; i++) {
-        let theta = 2*Math.PI / numOfPoints;
-        let px = radius * Math.cos(theta*i) + x;
-        let py = radius * Math.sin(theta*i) + y;
+    #questBook
+    #name
 
-        points = points + px + "," + py + " ";
+    #isUnlocked
+    #isCompleted
+    #prerequisites
+
+    #quests
+
+
+    #titleNode
+
+    constructor(questBook, div, name) {
+        this.#questBook = questBook;
+        this.#name = name;
+        this.#isUnlocked = false;
+        this.#isCompleted = false;
     }
 
-    polygon.setAttribute('points', points);
-    polygon.setAttribute('transform', `rotate(${angle}, ${x}, ${y})`);
+    get name() {
+        return this.#name;
+    }
 
-    svg.appendChild(polygon);
     
-    return polygon;
+
+    set name(newName) {
+        this.#name = newName;
+
+        this.refreshDisplay();
+    }
+
 }
 
-function drawLine(svg, x1, y1, x2, y2) {
-
-    const line = document.createElementNS(svg.namespaceURI, 'line')
-
-    line.setAttribute('x1', x1);
-    line.setAttribute('y1', y1);
-    line.setAttribute('x2', x2);
-    line.setAttribute('y2', y2);
+class Questbook {
+    #svgCanvas
+    #title
+    #description
+    #chapters
+    #titleNode
+    #chaptersNode
+    #descriptionNode
     
-    svg.appendChild(line);
+    constructor(title, description, {svgNode=undefined, titleNode=undefined, chaptersNode=undefined, descriptionNode=undefined} = {}) {
+        this.#title = title;
+        this.#description = description;
+        this.#chapters = new Set();
 
-    return line;
-};
+        this.currentChapter = 0;
 
-function drawConnectionRect(svg, x1, y1, x2, y2, pattern) {
+        if (svgNode) {
+            assertSVG(svgNode);
+            this.#svgCanvas = svgNode; 
+        }
 
-    const height = 5;
+        console.log(chaptersNode);
 
-    const line = document.createElementNS(svg.namespaceURI, 'rect');
+        if (titleNode) {
+            assertElement(titleNode, HTMLElement);
+            this.#titleNode = titleNode;
+        }
+        
+        if (chaptersNode) {
+            assertElement(chaptersNode, HTMLLIElement);
+            this.#chaptersNode = chaptersNode;
+        }
 
-    const dx = x2-x1;
-    const dy = y2-y1;
+        if (descriptionNode) {
+            assertElement(descriptionNode, HTMLElement)
+            this.#descriptionNode = descriptionNode;
+        }
+        
+        this.refreshDisplay();
+    }
 
-    const distance = Math.sqrt(dx*dx + dy*dy);
-    const angle = Math.atan2(dy, dx) * (180 / Math.PI);
-    
-    line.setAttribute('x', x1);
-    line.setAttribute('y', y1-height/2);
-    line.setAttribute('width', distance);
-    line.setAttribute('height', height); //Will be overwritten by styles
-    line.setAttribute('fill', `url(#${pattern})`);
+    get title() {
+        return this.#title;
+    }
 
-    line.setAttribute('transform', `rotate(${angle}, ${x1}, ${y1})`);
+    set title(newTitle) {
+        this.#title = newTitle;
+        this.#refreshTitle();
+    }
 
-    line.classList.add('quest-line');
-    
+    get description() {
+        return this.#description;
+    }
 
-    svg.appendChild(line);
+    set description(newDescription) {
+        this.#description = newDescription;
+        this.#refreshDescription();
+    }
 
-    return line;
-};
+    chapterList() {
+        return [...this.#chapters];
+    }
 
-function drawConnectionLine(svg, x1, y1, x2, y2) {
+    addChapter(chapter=undefined, refresh=true) {
 
-    const g = document.createElementNS(svg.namespaceURI, 'g');
+        if (chapter) {
+            assertClass(chapter, Chapter);
+
+            chapter.questBook
+            this.#chapters.add(chapter);
+        } else {
+
+        }
 
 
-    const dashedLine = document.createElementNS(svg.namespaceURI, 'line');
-    dashedLine.setAttribute('x1', x1);
-    dashedLine.setAttribute('y1', y1);
-    dashedLine.setAttribute('x2', x2);
-    dashedLine.setAttribute('y2', y2);
-    dashedLine.setAttribute('stroke-dasharray', '10,10');
+        if (refresh) {
+            this.#refreshChapters();
+        }
 
-    const solidLine = document.createElementNS(svg.namespaceURI, 'line');
-    solidLine.setAttribute('x1', x1);
-    solidLine.setAttribute('y1', y1);
-    solidLine.setAttribute('x2', x2);
-    solidLine.setAttribute('y2', y2);
+        return chapter;
 
-    g.appendChild(solidLine);
-    g.appendChild(dashedLine);
+    }
 
-    g.className.baseVal = 'quest-connection-line';
-    
-    svg.appendChild(g);
+    removeChapter(chapter, refresh=true) {
+        this.#chapters.delete(chapter);
 
-    return g;
-};
+        if (refresh) {
+            this.#refreshChapters();
+        }
 
-//let rect = drawRectangle(questArea, 20, 10, 40, 20);
-//let poly = drawPolygon(questArea, 8, 100, 100, 22.5, 50);
-//let circle = drawCircle(questArea, 150, 150, 20);
-//let line = drawLine(questArea, 300, 300, 200, 0);
+    }
 
-//rect.classList.add("quest");
-//poly.classList.add("quest");
-//circle.classList.add("quest");
-//line.classList.add("svg-test-line");
+    #refreshChapters() {
+        if (!this.#chaptersNode) {
+            return;
+        }
+        //Called when chapters are updated
+        
+        while (this.#chaptersNode.firstChild) {
+            this.#chaptersNode.removeChild(this.#chaptersNode.firstChild);
+        }
 
-//let questLine = drawConnectionLine(questArea, 0, 500, 500, 500);
+        for (const chapter of this.#chapters) {
+            let li = document.createElement("li")
 
-//questLine.classList.add("quest-line-unlocked");
+            li.textContent = chapter.name;
+            this.#chaptersNode.appendChild(li);
 
-//let questLine2 = drawConnectionLine(questArea, 0, 500, 500, 0);
-//questLine2.classList.add("quest-line-locked");
+            li.addEventListener('click', () => console.log("it works!" + chapter.name))
+        }
+    }
+
+    #refreshTitle() {
+        if (this.#titleNode) {
+            this.#titleNode.textContent = this.title
+        }
+    }
+
+    #refreshDescription() {
+        if (this.#descriptionNode) {
+            this.#descriptionNode.textContent = this.description;
+        }
+    }
+
+    refreshDisplay() {
+
+        this.#refreshTitle();
+        this.#refreshDescription();
+            // Load current chapter.
+        this.#refreshChapters(); 
+        
+    }
+}
+
+
+let questArea = document.getElementById("quest-area");
+
+let questbookTitle = document.getElementById("quest-chapters").children[0].children[0];
+let questbookChapters = document.getElementById("quest-chapters-list");
+
+let x = new Questbook("My Questbook", "About art", {svgNode: questArea, titleNode: questbookTitle, chaptersNode:questbookChapters});
+
+x.addChapter({name: "Hello World!"});
+
+let chapter = {name: "Babygirl"};
+
+x.addChapter(chapter);
+
+x.addChapter({name: "Hello World 2!"});
 
 
