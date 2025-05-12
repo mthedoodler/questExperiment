@@ -2,7 +2,7 @@
 
 ## Todo:
 
-- [ ] Draw Diagram to figure out what Quests and Questbooks can do.
+- [ ] Make frontend accessible
 
 
 Drawable should have:
@@ -53,11 +53,13 @@ Task should have:
 
 A Questbook should have:
     - The area with which to draw things in.
+    - A name
 
     - A list of chapters.
     - A list of all quests associated with the questbook.
 
 Chapter should have:
+    - a name
     - is unlocked
     - is completed
     - The quest or quests required to unlock it.
