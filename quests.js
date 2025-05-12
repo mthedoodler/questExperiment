@@ -87,7 +87,12 @@ class Quest{
     }
 
     setPosition(x, y) {
-        this.position = (x, y);
+        this.position = [x, y];
+        this.updateDisplay();
+        
+        for (const p of this.#parents) {
+            p.updateDisplay();
+        }
     }
 
     checkPrerequisitesCompletedAndUnlock() {
