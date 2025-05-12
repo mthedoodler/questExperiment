@@ -30,3 +30,5 @@ firstQuest.setImportant();
 
 finalQuest.setRequired();
 
+q = new Quest("Test", 400, 400, "Hello!", false);
+finalQuest.addDependent(q);

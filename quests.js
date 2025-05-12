@@ -19,14 +19,16 @@ class Quest{
 
     #node;
     #connectionNodes;
+    #children;
+    #parents;
 
     constructor(name, x, y, description = "", unlocked = false) {
         this.name = name;
         this.unlocked = unlocked;
         this.position = [x, y];
         this.description = description;
-        this.parents = new Set([]);
-        this.children = new Set([]);
+        this.#parents = new Set([]);
+        this.#children = new Set([]);
 
         Quest.allQuests.push(this);
         
@@ -61,17 +63,17 @@ class Quest{
             throw new Error("quest must be a Quest.");
         }
 
-        this.children.add(anotherQuest);
-        anotherQuest.parents.add(this);
+        this.#children.add(anotherQuest);
+        anotherQuest.#parents.add(this);
         this.updateDisplay();
     }
 
     dependentsList() {
-        return [...this.children].map((e) => e.name).join(", ");
+        return [...this.#children].map((e) => e.name).join(", ");
     }
 
     prerequisiteList() {
-        return [...this.parents].map((e) => e.name).join(", ");
+        return [...this.#parents].map((e) => e.name).join(", ");
     }
 
     addPrerequisite(anotherQuest) {
@@ -79,8 +81,8 @@ class Quest{
             throw new Error("quest must be a Quest.");
         }
 
-        this.parents.add(anotherQuest);
-        anotherQuest.children.add(this);
+        this.#parents.add(anotherQuest);
+        anotherQuest.#children.add(this);
         anotherQuest.updateDisplay();
     }
 
@@ -89,7 +91,7 @@ class Quest{
     }
 
     checkPrerequisitesCompletedAndUnlock() {
-        for (const p of this.parents) {
+        for (const p of this.#parents) {
             if (!(p.completed)) {
                 return;
             }
@@ -103,7 +105,7 @@ class Quest{
         if (this.completed || !this.unlocked) {return;}
 
         this.completed = true;
-        for (const c of this.children) {
+        for (const c of this.#children) {
             c.checkPrerequisitesCompletedAndUnlock();
         }
 
@@ -120,7 +122,7 @@ class Quest{
         questArea.appendChild(line);
         this.#connectionNodes.push(line);
 
-        let distance = Math.round(Math.sqrt(diffX*diffX, diffY*diffY));
+        let distance = Math.round(Math.sqrt(diffX*diffX + diffY*diffY));
         let angle = Math.atan2(diffY, diffX);
         
         line.style.width = `${distance}px`;
@@ -160,7 +162,7 @@ class Quest{
         
         this.#connectionNodes.length = 0;
 
-        for (const quest of this.children.values()) {
+        for (const quest of this.#children.values()) {
             this.#createConnectionLine(quest);
         }
 
@@ -233,5 +235,3 @@ closeQuestInfoButton.addEventListener("click", hideQuestInfo);
 
 questAreaContainer.addEventListener('mousedown', startDragging);
 questAreaContainer.addEventListener('mouseup', stopDragging);
-
-
